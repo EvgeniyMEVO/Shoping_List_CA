@@ -13,26 +13,20 @@ class MainViewModel: ViewModel() {
     // теперь мы знаем о data слое, это не хорошо, но пока так
     private val repository = ShopListRepositoryImpl
 
-    val shopList = MutableLiveData<List<ShopItem>>()
-
     private val getShopListUseCase = GetShopListUseCase(repository)
     private val deleteShopItemUseCase = DeleteShopItemUseCase(repository)
     private val editingShopItemUseCase = EditingShopItemUseCase(repository)
 
-    fun getShopList(){
-        val list = getShopListUseCase.getShopList()
-        shopList.value = list
-    }
+    val shopList = getShopListUseCase.getShopList()
+
 
     fun deleteShopItem(shopItem: ShopItem){
         deleteShopItemUseCase.deleteShopItem(shopItem)
-        getShopList()
     }
 
     fun changeEnabledState(shopItem: ShopItem){
         val newItem = shopItem.copy(enabled = !shopItem.enabled)
         editingShopItemUseCase.editShopItem(shopItem)
-        getShopList()
     }
 
 }

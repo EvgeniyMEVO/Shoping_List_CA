@@ -1,9 +1,13 @@
 package com.example.shopinglistca.data
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.shopinglistca.domain.ShopItem
 import com.example.shopinglistca.domain.ShopListRepository as ShopListRepository
 
 object ShopListRepositoryImpl: ShopListRepository {
+
+    private val shopListLD = MutableLiveData<List<ShopItem>>()
 
     private val shopList = mutableListOf<ShopItem>()
 
@@ -21,12 +25,13 @@ object ShopListRepositoryImpl: ShopListRepository {
             shopItem.id = authoIncId++
         }
         shopList.add(shopItem)
+        updateList()
     }
 
     override fun editShopItem(shopItem: ShopItem) {
         val oldShopItem = getShopItem(shopItem.id)
         shopList.remove(oldShopItem)
-        shopList.add(shopItem)
+        addShopItem(shopItem)
     }
 
     override fun getShopItem(shopItemId: Int): ShopItem {
@@ -39,10 +44,15 @@ object ShopListRepositoryImpl: ShopListRepository {
 
     override fun deleteShopItem(shopItem: ShopItem) {
         shopList.remove(shopItem)
+        updateList()
     }
 
-    override fun getShopList(): List<ShopItem> {
+    override fun getShopList(): LiveData<List<ShopItem>> {
         // возвращаем копию, т.к. если мы изменим shopList далее, здесь он не изменится
-        return shopList.toList()
+        return shopListLD
+    }
+
+    private fun updateList(){
+        shopListLD.value = shopList.toList()
     }
 }
