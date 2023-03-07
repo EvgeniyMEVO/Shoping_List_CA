@@ -53,6 +53,7 @@ object ShopListRepositoryImpl: ShopListRepository {
     }
 
     private fun updateList(){
+        //сделаем копию чтобы поток данных всегда содержал снимок текущего состояния shopList, а не ссылку на исходный объект shopList
         shopListLD.value = shopList.toList()
     }
 }
